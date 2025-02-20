@@ -95,6 +95,7 @@ export class KubernetesProxyClient {
   }): Promise<{ text: string }> {
     const params = new URLSearchParams({
       container: containerName,
+      tailLines: 100
     });
     if (previous) {
       params.append('previous', '');
