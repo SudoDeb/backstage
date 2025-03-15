@@ -16,10 +16,9 @@
 export { EntityCardBlueprint } from './EntityCardBlueprint';
 export { EntityContentBlueprint } from './EntityContentBlueprint';
 export {
-  EntityCardLayoutBlueprint,
-  type EntityCardLayoutProps,
-} from './EntityCardLauyoutBlueprint';
-export {
-  defaultEntityContentGroups,
-  defaultEntityCardAreas,
-} from './extensionData';
+  EntityContentLayoutBlueprint,
+  type EntityContentLayoutProps,
+} from './EntityContentLayoutBlueprint';
+export { EntityHeaderBlueprint } from './EntityHeaderBlueprint';
+export { defaultEntityContentGroups } from './extensionData';
+export type { EntityCardType } from './extensionData';

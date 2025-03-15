@@ -29,7 +29,6 @@ import { PermissionsServiceRequestOptions } from '@backstage/backend-plugin-api'
 import { PolicyDecision } from '@backstage/plugin-permission-common';
 import { QueryPermissionRequest } from '@backstage/plugin-permission-common';
 import { ResourcePermission } from '@backstage/plugin-permission-common';
-import { TokenManager } from '@backstage/backend-common';
 import { z } from 'zod';
 
 // @public
@@ -201,20 +200,16 @@ export function createPermissionResourceRef<TResource, TQuery>(): {
 
 // @public
 export function createPermissionRule<
-  TResource,
-  TQuery,
-  TQueryOutput extends TQuery,
-  TResourceType extends string,
+  TRef extends PermissionResourceRef,
   TParams extends PermissionRuleParams = undefined,
 >(
-  rule: CreatePermissionRuleOptions<
-    TResource,
-    TQuery,
-    TQueryOutput,
-    TResourceType,
-    TParams
-  >,
-): PermissionRule<TResource, TQuery, TResourceType, TParams>;
+  rule: CreatePermissionRuleOptions<TRef, TParams>,
+): PermissionRule<
+  TRef['TResource'],
+  TRef['TQuery'],
+  TRef['resourceType'],
+  TParams
+>;
 
 // @public @deprecated
 export function createPermissionRule<
@@ -228,19 +223,18 @@ export function createPermissionRule<
 
 // @public (undocumented)
 export type CreatePermissionRuleOptions<
-  TResource,
-  TQuery,
-  TQueryOutput extends TQuery,
-  TResourceType extends string,
+  TRef extends PermissionResourceRef,
   TParams extends PermissionRuleParams,
-> = {
-  name: string;
-  description: string;
-  resourceRef: PermissionResourceRef<TResource, TQuery, TResourceType>;
-  paramsSchema?: z.ZodSchema<TParams>;
-  apply(resource: TResource, params: NoInfer_2<TParams>): boolean;
-  toQuery(params: NoInfer_2<TParams>): PermissionCriteria<TQueryOutput>;
-};
+> = TRef extends PermissionResourceRef<infer IResource, infer IQuery, any>
+  ? {
+      name: string;
+      description: string;
+      resourceRef: TRef;
+      paramsSchema?: z.ZodSchema<TParams>;
+      apply(resource: IResource, params: NoInfer_2<TParams>): boolean;
+      toQuery(params: NoInfer_2<TParams>): PermissionCriteria<IQuery>;
+    }
+  : never;
 
 // @public
 export const isAndCriteria: <T>(
@@ -390,8 +384,7 @@ export class ServerPermissionClient implements PermissionsService {
     config: Config,
     options: {
       discovery: DiscoveryService;
-      tokenManager?: TokenManager;
-      auth?: AuthService;
+      auth: AuthService;
     },
   ): ServerPermissionClient;
 }

@@ -24,13 +24,14 @@ import { glob } from 'glob';
 
 // Check if core.css and components.css exist
 const cssDir = 'src/css';
-const distDir = 'dist/css';
+const distDir = 'css';
 const componentsDir = 'src/components';
 
 // Core files
 const cssFiles = [
   { path: `${cssDir}/core.css`, newName: 'core.css' },
   { path: `${cssDir}/components.css`, newName: 'components.css' },
+  { path: `${cssDir}/styles.css`, newName: 'styles.css' },
 ];
 
 // Components files
